@@ -1,0 +1,35 @@
+import streamlit as st
+from dotenv import load_dotenv
+from langchain_groq import ChatGroq
+from langchain.prompts import PromptTemplate
+from langchain_core.runnables import RunnableSequence
+
+load_dotenv()
+
+def generate_pet_name(animal_type, pet_gender):
+    llm = ChatGroq(
+        model="meta-llama/llama-4-maverick-17b-128e-instruct",
+        temperature=0.7
+    )
+
+    prompt_template = PromptTemplate(
+        input_variables=['animal_type', 'pet_gender'],
+        template="List three unique names for a {pet_gender} {animal_type}."
+    )
+
+    chain = RunnableSequence(prompt_template, llm)
+    response = chain.invoke({'animal_type': animal_type, 'pet_gender': pet_gender})
+    return response.content
+
+st.title("Pet Name Generator")
+
+animal = st.text_input("Enter the animal type:")
+gender = st.text_input("Enter the pet's gender:")
+
+if st.button("Generate Names"):
+    if animal and gender:
+        names = generate_pet_name(animal, gender)
+        st.write("Suggested Names:")
+        st.write(names)
+    else:
+        st.warning("Please enter both animal type and gender.")

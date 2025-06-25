@@ -1,30 +1,29 @@
-import os
-from dotenv import load_dotenv  # type: ignore
-from langchain_groq import ChatGroq  # type: ignore
-from langchain.prompts import ChatPromptTemplate  # type: ignore
-from langchain.chains import LLMChain  # type: ignore
+from dotenv import load_dotenv
+from langchain_groq import ChatGroq
+from langchain_core.messages import HumanMessage
+from langchain.prompts import PromptTemplate
 
-def main():
-    load_dotenv()
+load_dotenv()
 
+def generate_answers(animal_type):
     llm = ChatGroq(
         model="meta-llama/llama-4-maverick-17b-128e-instruct",
         temperature=0.7
     )
 
-    topic = input("Enter your topic for the LLM: ").strip()
-    if not topic:
-        print("No topic entered. Exiting.")
-        return
+    prompt_template = PromptTemplate(
+        input_variables=['animal_type'],
+        template="List three interesting facts about a {animal_type}."
+    )
 
-    #template creation
-    prompt = ChatPromptTemplate.from_template("Explain {topic} in 15 words.")
+    user_query = prompt_template.format(animal_type=animal_type)
 
-    # llm chain
-    chain = prompt | llm
-    output = chain.invoke({"topic": topic})
+    response = llm.invoke([
+        HumanMessage(content=user_query)
+    ])
 
-    print(output.content)
+    return response.content
 
 if __name__ == "__main__":
-    main()
+    animal = input("Enter an animal type: ")
+    print(generate_answers(animal))
