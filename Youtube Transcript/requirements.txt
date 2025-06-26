@@ -1,6 +1,7 @@
 python-dotenv
 langchain
-openai
+langchain-groq
 youtube-transcript-api
 faiss-cpu
 streamlit
+langchain_community
