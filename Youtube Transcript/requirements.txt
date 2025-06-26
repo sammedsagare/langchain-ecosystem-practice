@@ -5,3 +5,8 @@ youtube-transcript-api
 faiss-cpu
 streamlit
 langchain_community
+sentence-transformers
+textwrap
+pydantic
+requests
+transformers
